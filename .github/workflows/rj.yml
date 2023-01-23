@@ -26,6 +26,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint==2.11.1
+        pip install boto3==1.26.54
 
     - name: Analysing the code with pylint
       run: |
@@ -45,7 +46,9 @@ jobs:
           username: ${{ secrets.ALPHA_USERNAME }}
           key: ${{ secrets.ALPHA_SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/rjmtm-lambda/
+            cd /var/www/lambdas/
+            touch .env
+            echo "${{ secrets.LAMBDA_ENV }}" > .env
             git checkout -f
             git pull
 
@@ -57,7 +60,9 @@ jobs:
           username: ${{ secrets.PROD_USERNAME }}
           key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/rjmtm-lambda/
+            cd /var/www/lambdas/
+            touch .env
+            echo "${{ secrets.LAMBDA_ENV }}" > .env
             php artisan key:generate --force
             git checkout -f
             git pull
